@@ -1,0 +1,26 @@
+# Version of the configuration file
+version: 1
+
+# Name of the pipeline
+name: merlin
+
+
+# usage: merlin [-h] [--profile] [--generate-only] [--configure] [-a ANALYSIS_PARAMETERS] [-o DATA_ORGANIZATION] [-c CODEBOOK [CODEBOOK ...]] [-m MICROSCOPE_PARAMETERS] [-p POSITIONS]
+#               [-n CORE_COUNT] [--check-done] [-t ANALYSIS_TASK] [-i FRAGMENT_INDEX] [-e DATA_HOME] [-s ANALYSIS_HOME] [-k SNAKEMAKE_PARAMETERS] [--no_report NO_REPORT]
+#               dataset
+
+input_dir: /data/meds1_a/jimaxt/shared/merlin_data/raw_data/20210709_StellaOva_combi_C2combi
+output_dir: /data/meds1_a/jimaxt/eglez/merlin
+analysis_parameters: /data/meds1_a/jimaxt/shared/merlin_data/merfish_parameters/analysis//merlin_analysis_Stella_opti3.json
+data_organization: /data/meds1_a/jimaxt/shared/merlin_data/merfish_parameters/dataorganization/data_organization_20210709_StellaOva_combi_C2combi.csv
+codebook: /data/meds1_a/jimaxt/shared/merlin_data/merfish_parameters/codebooks/C2v6_codebook.csv
+microscope_parameters: /data/meds1_a/jimaxt/shared/merlin_data/merfish_parameters/microscope/micro_stella.json
+positions: /data/meds1_a/jimaxt/shared/merlin_data/merfish_parameters/positions/positions_20210709_StellaOva_combi_C2combi.txt
+core_count: 20
+
+
+# Resources requested
+resources:
+  threads: 10
+  workers: 1
+  memory: 10
