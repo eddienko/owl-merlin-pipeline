@@ -7,6 +7,7 @@ requirements = [
     "dask",
     "distributed",
     "owl-pipeline-develop",
+    "MERlin @ git+https://github.com/IMAXT/MERlin.git@imaxt#egg=merlin",
 ]
 
 setup_requirements = ["pytest-runner", "flake8"]
