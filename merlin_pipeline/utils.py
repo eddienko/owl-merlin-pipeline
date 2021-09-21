@@ -17,7 +17,7 @@ def inferDatasetParam(imagedir):
 
     image_list = [*imagedir.glob("*.tif")]
     image_list = pd.Series(image_list)
-    image_dim = tf.imread(image_list[0]).shape[1:]
+    image_dim = tf.imread(f"{image_list[0]}").shape[1:]
     image_df = image_list.apply(_info).str.split("_", expand=True)
     return (
         len(image_df[0].unique()),
@@ -146,11 +146,11 @@ def process_FOV(
     for z in range(1, nzslices + 1):
         imagename = dataset / (imprefix + str(cycle).zfill(2) + "_" + imFOV + "%02d.tif" % z)
         if imagename.exists():
-            image = tf.imread(imagename)[0:2]
+            image = tf.imread(f"{imagename}")[0:2]
             # flat-fielding would happen here
             merged[(z - 1) * 2 : z * 2] = image
             if z == fiducialplane:
-                merged[-1] = tf.imread(imagename)[2]
+                merged[-1] = tf.imread(f"{imagename}")[2]
         else:
             try:
                 image_to_use = outpath / "blanks" / imagename.name
@@ -159,7 +159,7 @@ def process_FOV(
                 merged[(z - 1) * 2 : z * 2] = image
                 # outfile.write(f"Using image {image_to_use}  ")
                 if z == fiducialplane:
-                    merged[-1] = tf.imread(image_to_use)[2]
+                    merged[-1] = tf.imread(f"{image_to_use}")[2]
             except:
                 logger.warning("Image %s not found" % imagename)
 
