@@ -94,6 +94,7 @@ def main(
     codebook: Path,
     microscope_parameters: Path,
     positions: Path,
+    extra_args: str,
     **kwargs,
 ) -> int:  # pragma: no cover
     """Example pipeline.
@@ -140,8 +141,12 @@ def main(
         codebook.name,
         "-n",
         os.getenv("CPU_REQUESTS", "10"),
-        input_dir.name,
     ]
+
+    if extra_args:
+        cmd += extra_args.split(" ")
+
+    cmd += [input_dir.name]
 
     ncycles, nFOVs, nzslices, npixel = utils.inferDatasetParam(input_dir)
     logger.info(

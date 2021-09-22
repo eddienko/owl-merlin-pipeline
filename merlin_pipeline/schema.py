@@ -2,7 +2,6 @@ from pathlib import Path
 
 import voluptuous as vo
 
-
 schema = vo.Schema(
     vo.All(
         {
@@ -14,6 +13,7 @@ schema = vo.Schema(
             vo.Required("codebook"): vo.Coerce(Path),
             vo.Required("microscope_parameters"): vo.Coerce(Path),
             vo.Required("positions"): vo.Coerce(Path),
+            vo.Optional("extra_args", default=""): str,
         },
     )
 )
