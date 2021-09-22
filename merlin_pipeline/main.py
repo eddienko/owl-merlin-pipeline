@@ -63,6 +63,7 @@ def create_env(input_dir: Path, output_dir: Path):
 
 
 def run_merlin(command: List, output_dir: Path, env=None):
+    logger.info("Running command %s ", " ".join(command))
     process = subprocess.Popen(
         command,
         env=env,
@@ -71,13 +72,16 @@ def run_merlin(command: List, output_dir: Path, env=None):
         stderr=subprocess.STDOUT,
         shell=False,
     )
+    stdout = []
     while True:
         output = process.stdout.readline()
+        if output:
+            s = output.strip().decode()
+            stdout.append(s)
+            logger.info(s)
         if process.poll() is not None:
             break
-        if output:
-            logger.info(output.strip().decode())
-    return process
+    return process.returncode, stdout
 
 
 @pipeline
@@ -123,8 +127,7 @@ def main(
     create_env(input_dir, output_dir)
 
     cmd = [
-        "/home/eglez/.local/bin/merlin",
-        "--generate-only",
+        "/opt/conda/bin/merlin",
         "-p",
         positions.name,
         "-a",
@@ -136,7 +139,7 @@ def main(
         "-c",
         codebook.name,
         "-n",
-        "10",
+        os.getenv("CPU_REQUESTS", "10"),
         input_dir.name,
     ]
 
@@ -153,7 +156,6 @@ def main(
     for cycle in range(ncycles):
         imprefix = "merFISH__" if cycle < 10 else "merFISH_"
 
-        files = []
         for FOV in range(nFOVs):
             imFOV = "%03d_" % FOV
             f = delayed(utils.process_FOV)(
@@ -169,7 +171,7 @@ def main(
                 FOV,
             )
             files.append(f)
-        dask.compute(files)
+    dask.compute(files)
 
     utils.generate_position(
         input_dir,
@@ -193,7 +195,6 @@ def main(
     shutil.rmtree(output_dir / "analysis" / input_dir.name, ignore_errors=True)
 
     client = get_client()
-    logger.info("Running command %s ", " ".join(cmd))
     with dask.annotate(executor="processes", retries=2):
         fut = client.submit(
             run_merlin,
@@ -201,12 +202,12 @@ def main(
             output_dir,
             env={"MERLIN_ENV_PATH": output_dir, "PYTHONUNBUFFERED": "1"},
         )
-    res = client.gather(fut)
+    res, stdout = client.gather(fut)
 
-    if res.returncode == 0:
+    if res == 0:
         logger.info("Pipeline successful")
     else:
-        logger.error("Pipeline failed")
+        logger.error("Pipeline failed: %s", stdout)
         raise Exception("Pipeline failed")
 
-    return res.returncode
+    return res

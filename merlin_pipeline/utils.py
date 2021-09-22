@@ -161,7 +161,7 @@ def process_FOV(
                 if z == fiducialplane:
                     merged[-1] = tf.imread(f"{image_to_use}")[2]
             except:
-                logger.warning("Image %s not found" % imagename)
+                logger.warning("Image %s not found" % imagename.name)
 
     tf.imsave(
         os.path.join(outpath, "merged", dataset.name, "merFISH_merged_%02d_%03d.tif" % (cycle, FOV)),
