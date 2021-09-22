@@ -190,6 +190,8 @@ def main(
         nzslices,
     )
 
+    shutil.rmtree(output_dir / "analysis" / input_dir.name, ignore_errors=True)
+
     client = get_client()
     logger.info("Running command %s ", " ".join(cmd))
     with dask.annotate(executor="processes", retries=2):
