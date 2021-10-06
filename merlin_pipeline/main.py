@@ -159,7 +159,7 @@ def main(
 
     files = []
     for cycle in range(ncycles):
-        imprefix = "merFISH__" if cycle < 10 else "merFISH_"
+        imprefix = "merFISH__"
 
         for FOV in range(nFOVs):
             imFOV = "%03d_" % FOV
