@@ -37,13 +37,8 @@ def fill_blanks(inpath, outpath=None):
     blank_counter = 0
 
     with open(os.path.join(outpath, "blank_log.txt"), "w") as outfile:
-
+        imprefix = "merFISH__"
         for cycle in range(ncycles):
-            if cycle < 10:
-                imprefix = "merFISH__"
-            else:
-                imprefix = "merFISH_"
-
             for FOV in range(nFOVs):
                 imFOV = "%03d_" % FOV
                 for z in range(1, nzslices + 1):
